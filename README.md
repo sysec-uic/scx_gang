@@ -84,5 +84,5 @@ Full numbers and their caveats: [docs/results.md](docs/results.md).
 
 ## License
 
-GPL-2.0 (see `LICENSE`). The schedulers derive from `scx_simple` in the
-[sched_ext scheduler collection](https://github.com/sched-ext/scx).
+GPL-2.0 (see `LICENSE`). The schedulers derive from [`scx_simple`](https://github.com/sched-ext/scx-c-examples/blob/main/scheds/c/scx_simple.c) in the
+[sched_ext scheduler collection (C examples)](https://github.com/sched-ext/scx-c-examples).
