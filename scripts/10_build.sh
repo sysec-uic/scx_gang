@@ -31,10 +31,18 @@ if [ "$SCX_TAG" != skip ] && [ -d "$SCX_DIR/.git" ]; then
   echo "=== checking out scx $SCX_TAG (set SCX_TAG=skip to keep current) ==="
   git -C "$SCX_DIR" checkout -q "$SCX_TAG" || echo "  (checkout failed; building against current tree)"
 fi
-BPFTOOL="$(command -v bpftool || ls /usr/sbin/bpftool /usr/lib/linux-tools/*/bpftool 2>/dev/null | head -1)"
+# Locate bpftool. Keep every probe non-fatal: under `set -e -o pipefail` a bare
+# `ls` of a missing path would abort the script before the error message below.
+BPFTOOL="$(command -v bpftool 2>/dev/null || true)"
+if [ -z "$BPFTOOL" ]; then
+  for cand in /usr/sbin/bpftool /usr/local/sbin/bpftool /usr/lib/linux-tools/*/bpftool; do
+    [ -x "$cand" ] && { BPFTOOL="$cand"; break; }
+  done
+fi
 if [ -z "${BPFTOOL:-}" ] || [ ! -x "$BPFTOOL" ]; then
   echo "ERROR: bpftool not found. Install it:" >&2
-  echo "  sudo apt install -y linux-tools-\$(uname -r) linux-tools-common  # or: sudo apt install bpftool" >&2
+  echo "  sudo apt install -y bpftool            # or: linux-tools-\$(uname -r) linux-tools-common" >&2
+  echo "Run scripts/00_probe.sh to check the rest of the toolchain too." >&2
   exit 1
 fi
 echo "using bpftool: $BPFTOOL ($("$BPFTOOL" version 2>/dev/null | head -1))"
