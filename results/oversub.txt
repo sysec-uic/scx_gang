@@ -1,0 +1,23 @@
+cpus=48  trials=8  iters/run=1,000,000  (3 threads/gang; oversub when 3K>48)
+=== K=4 gangs  (3K=12 threads, under) -- per-gang weak/1M ===
+  default    med=114     mean=4244    [16..19028]
+  scx_gang   med=11259   mean=14512   [15..64542]
+  scx_tgang  med=11028   mean=11728   [7046..16329]
+=== K=8 gangs  (3K=24 threads, under) -- per-gang weak/1M ===
+  default    med=1162    mean=5222    [9..24426]
+  scx_gang   med=370     mean=7121    [18..54771]
+  scx_tgang  med=11402   mean=12314   [5975..30358]
+=== K=16 gangs  (3K=48 threads, under) -- per-gang weak/1M ===
+  default    med=7252    mean=13487   [34..261556]
+  scx_gang   med=12033   mean=18854   [32..559281]
+  scx_tgang  med=17652   mean=28924   [4001..194681]
+=== K=24 gangs  (3K=72 threads, OVER (1.5x)) -- per-gang weak/1M ===
+  default    med=14250   mean=35404   [309..572854]
+  scx_gang   med=7263    mean=20712   [13..312119]
+  scx_tgang  med=18365   mean=27564   [4849..195371]
+=== K=32 gangs  (3K=96 threads, OVER (2.0x)) -- per-gang weak/1M ===
+  default    med=15590   mean=35877   [1310..336735]
+  scx_gang   med=5105    mean=13987   [16..315086]
+  scx_tgang  med=14628   mean=24964   [4215..247988]
+(higher per-gang median = better gang coherence under load)
+ALLDONE

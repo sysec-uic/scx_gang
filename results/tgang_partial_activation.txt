@@ -1,0 +1,11 @@
+# scx_tgang partial-activation rate (Chameleon 2-socket Xeon 6240R, 48 cores, kernel 7.0)
+# partial = activation passes that placed >=1 gang member but ran out of idle CPUs
+# before the whole queued front-gang fit. 3 threads/gang, sb_group_plus, sync=sense_barrier.
+# TRIALS=5 per row, cumulative over the campaign. Generated 2026-06-26.
+K  threads  sub    activations  partial   partial%   trials=5
+4  12       fits   4573         0         0.00%
+8  24       fits   19045        0         0.00%
+16 48       fits   69279        5         0.01%
+20 60       OVER   38945        614       1.58%
+24 72       OVER   30267        2847      9.41%
+32 96       OVER   55813        16388     29.36%

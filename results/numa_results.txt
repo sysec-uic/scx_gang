@@ -1,0 +1,37 @@
+NUMA nodes: 2  ->  node0:{0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46} node1:{1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39 41 43 45 47} 
+Runs per config: N=15   iters/run: 1,000,000
+
+################## SINGLE-GANG (controlled: sync = sense_barrier) ##################
+  D-unpinned        1695 +- 2598      (weak/1M)
+  D-1socket         5976 +- 2563      (weak/1M)
+  D-crossnode        112 +- 88        (weak/1M)
+  scx_gang          6555 +- 2088      (weak/1M)
+  scx_group         5196 +- 2280      (weak/1M)
+
+################## MULTI-GANG (2 concurrent gangs = 1 per node) ##################
+  default scheduler, 2 x sb_sense:
+    run1:3879
+8621
+    wall=1.877258093s
+    run2:5980
+2760
+    wall=2.122874293s
+    run3:6763
+3633
+    wall=2.218904075s
+  scx_gang, 2 x sb_group_plus:
+    run1:11360
+9231
+    wall=2.154750708s
+    run2:7692
+5385
+    wall=2.028765029s
+    run3:9480
+6021
+    wall=2.156102505s
+
+DONE. Interpretation:
+  * If scx_gang >> D-unpinned and ~ D-1socket, the scheduler AUTOMATICALLY
+    achieves what manual same-socket pinning does -> supports the paper.
+  * If D-unpinned ~ scx_gang, the default already co-schedules well here too.
+  * D-crossnode shows how much NUMA scattering hurts (the gap scx_gang closes).

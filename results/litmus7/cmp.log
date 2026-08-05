@@ -1,0 +1,22 @@
+cpus=48 trials=5 cap=12s  (3 threads/gang; oversub when 3K>48)
+=== K=4 (3K=12 threads, under) ===
+  pin        completed  14/20  gangs   med=387     floor=18      [n=14]
+  gang       completed  20/20  gangs   med=13120   floor=129     [n=20]
+  tgang      completed  20/20  gangs   med=10362   floor=4783    [n=20]
+=== K=8 (3K=24 threads, under) ===
+  pin        completed  34/40  gangs   med=501     floor=4       [n=34]
+  gang       completed  40/40  gangs   med=10324   floor=56      [n=40]
+  tgang      completed  40/40  gangs   med=10608   floor=4220    [n=40]
+=== K=16 (3K=48 threads, under) ===
+  pin        completed  41/80  gangs   med=1860    floor=0       [n=42]
+  gang       completed  80/80  gangs   med=12344   floor=45      [n=80]
+  tgang      completed  80/80  gangs   med=53086   floor=12970   [n=80]
+=== K=24 (3K=72 threads, OVER 1.5x) ===
+  pin        completed   6/120 gangs   med=46      floor=0       [n=8]
+  gang       completed 120/120 gangs   med=9996    floor=16      [n=120]
+  tgang      completed  48/120 gangs   med=49925   floor=0       [n=50]
+=== K=32 (3K=96 threads, OVER 2.0x) ===
+  pin        completed   0/160 gangs   med=0       floor=0       [n=5]
+  gang       completed 155/160 gangs   med=8789    floor=35      [n=155]
+  tgang      completed   0/160 gangs   med=0       floor=0       [n=5]
+(pin: completions should collapse once oversubscribed; tgang stays ~100%)

@@ -1,0 +1,20 @@
+ARM litmus breadth (aarch64, 6 cores), N=10, weak/1M  [min..max]
+== SB ==
+    default          463608  [290099..907749]
+    same-cluster     832458  [757314..951478]
+    cross-cluster    800173  [760733..842184]
+== MP ==
+    default           38584  [249..124542]
+    same-cluster      10051  [3958..17597]
+    cross-cluster     11969  [4219..17973]
+== LB ==
+    default               0  [0..0]
+    same-cluster          0  [0..0]
+    cross-cluster         0  [0..0]
+== 2+2W ==
+    default            3508  [388..15399]
+    same-cluster      22237  [14138..28835]
+    cross-cluster     24710  [12581..31811]
+== IRIW ==
+    default              92  [0..471]
+(SB is the only x86-TSO-allowed test; MP/LB/2+2W/IRIW are TSO-forbidden -> 0 on x86, nonzero here = weak ARM memory)

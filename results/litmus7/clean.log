@@ -1,0 +1,27 @@
+cpus=48 trials=8 guard=60s pincap=20s (3 threads/gang; oversub when 3K>48)
+=== K=4 (3K=12 threads, under) -- per-gang weak/1M ===
+  default     32/32   done  med=87      mean=1528    [12..11384]
+  pin         32/32   done  med=74      mean=75      [7..235]
+  gang        32/32   done  med=10641   mean=10471   [65..20382]
+  tgang       32/32   done  med=13119   mean=12445   [7480..18125]
+=== K=8 (3K=24 threads, under) -- per-gang weak/1M ===
+  default     64/64   done  med=141     mean=4813    [20..67982]
+  pin         64/64   done  med=85      mean=1212    [23..26745]
+  gang        64/64   done  med=4946    mean=7711    [7..74695]
+  tgang       64/64   done  med=10885   mean=12089   [5389..25608]
+=== K=16 (3K=48 threads, under) -- per-gang weak/1M ===
+  default    128/128  done  med=4735    mean=8501    [46..111170]
+  pin        128/128  done  med=4920    mean=9994    [16..87595]
+  gang       128/128  done  med=10050   mean=15880   [26..339559]
+  tgang      128/128  done  med=18137   mean=29730   [3206..184122]
+=== K=24 (3K=72 threads, OVER 1.5x) -- per-gang weak/1M ===
+  default    192/192  done  med=12662   mean=31205   [646..387007]
+  pin         14/192  done  med=88      mean=6192    [0..38890]
+  gang       192/192  done  med=7065    mean=15310   [10..212906]
+  tgang      192/192  done  med=17231   mean=27537   [5948..319761]
+=== K=32 (3K=96 threads, OVER 2.0x) -- per-gang weak/1M ===
+  default    256/256  done  med=16436   mean=39413   [2390..339444]
+  pin          0/256  done  med=0       mean=0       [0..0]
+  gang       256/256  done  med=12715   mean=27663   [23..331626]
+  tgang       62/256  done  med=12456   mean=20523   [4110..247495]
+(validates paper Fig 4: does tgang completion/weak stay high at K=24,32 uncapped?)

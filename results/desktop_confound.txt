@@ -1,0 +1,2 @@
+  default + std::barrier (heavyweight)   med=39       min=4        max=1639     mean=144     
+  default + sense_barrier (lightweight)  med=76676    min=5845     max=422674   mean=91399   

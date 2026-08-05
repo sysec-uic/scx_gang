@@ -1,0 +1,12 @@
+cpus=48  litmus7=/home/xiaoguang/.local/bin/litmus7  bin=/home/xiaoguang/numa_kit/bin  size=500k runs=10
+
+########## 1. SINGLE TEST (fits) — weak/second ##########
+  litmus7 timebase+incr1         13457 weak/s  (pos=82225 t=6.11s)
+  litmus7 timebase+pin same      20704 weak/s  (hand-tuned -p 0,1)
+  scx_gang (auto NUMA-local)      5430 weak/s
+
+########## 2. OVERSUBSCRIPTION sweep — aggregate weak/s and per-instance floor ##########
+--- K=1 concurrent instances (2K=2 threads / 48 cores) ---
+  litmus7 (static affinity):  agg 32976 weak/s   per-inst floor 442248 weak/inst
+  scx_tgang (temporal gang):  agg 5032 weak/s   per-inst floor 12630 weak/inst
+--- K=12 concurrent instances (2K=24 threads / 48 cores) ---

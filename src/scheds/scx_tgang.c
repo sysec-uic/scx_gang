@@ -1,0 +1,110 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * scx_tgang userspace loader. See scx_tgang.bpf.c and DESIGN_gang.md.
+ *
+ * Copyright (c) 2022 Meta Platforms, Inc. and affiliates.
+ * Copyright (c) 2022 Tejun Heo <tj@kernel.org>
+ * Copyright (c) 2022 David Vernet <dvernet@meta.com>
+ */
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <libgen.h>
+#include <bpf/bpf.h>
+#include <scx/common.h>
+#include "scx_tgang.bpf.skel.h"
+
+const char help_fmt[] =
+"A multi-group gang sched_ext scheduler for litmus testing.\n"
+"\n"
+"See the top-level comment in .bpf.c for more details.\n"
+"\n"
+"Usage: %s [-f] [-v]\n"
+"\n"
+"  -f            Use FIFO scheduling for background tasks\n"
+"  -v            Print libbpf debug messages\n"
+"  -h            Display this help and exit\n";
+
+static bool verbose;
+static volatile int exit_req;
+
+static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
+{
+	if (level == LIBBPF_DEBUG && !verbose)
+		return 0;
+	return vfprintf(stderr, format, args);
+}
+
+static void sigint_handler(int gang)
+{
+	exit_req = 1;
+}
+
+static void read_stats(struct scx_tgang *skel, __u64 *stats)
+{
+	int nr_cpus = libbpf_num_possible_cpus();
+	__u64 cnts[5][nr_cpus];
+	__u32 idx;
+
+	memset(stats, 0, sizeof(stats[0]) * 5);
+
+	for (idx = 0; idx < 5; idx++) {
+		int ret, cpu;
+
+		ret = bpf_map_lookup_elem(bpf_map__fd(skel->maps.stats),
+					  &idx, cnts[idx]);
+		if (ret < 0)
+			continue;
+		for (cpu = 0; cpu < nr_cpus; cpu++)
+			stats[idx] += cnts[idx][cpu];
+	}
+}
+
+int main(int argc, char **argv)
+{
+	struct scx_tgang *skel;
+	struct bpf_link *link;
+	__u32 opt;
+	__u64 ecode;
+
+	libbpf_set_print(libbpf_print_fn);
+	signal(SIGINT, sigint_handler);
+	signal(SIGTERM, sigint_handler);
+restart:
+	skel = SCX_OPS_OPEN(tgang_ops, scx_tgang);
+
+	while ((opt = getopt(argc, argv, "fvh")) != -1) {
+		switch (opt) {
+		case 'f':
+			skel->rodata->fifo_sched = true;
+			break;
+		case 'v':
+			verbose = true;
+			break;
+		default:
+			fprintf(stderr, help_fmt, basename(argv[0]));
+			return opt != 'h';
+		}
+	}
+
+	SCX_OPS_LOAD(skel, tgang_ops, scx_tgang, uei);
+	link = SCX_OPS_ATTACH(skel, tgang_ops, scx_tgang);
+
+	while (!exit_req && !UEI_EXITED(skel, uei)) {
+		__u64 stats[5];
+
+		read_stats(skel, stats);
+		printf("background=%llu activations=%llu placed=%llu oversub_wait=%llu partial=%llu\n",
+		       stats[0], stats[1], stats[2], stats[3], stats[4]);
+		fflush(stdout);
+		sleep(1);
+	}
+
+	bpf_link__destroy(link);
+	ecode = UEI_REPORT(skel, uei);
+	scx_tgang__destroy(skel);
+
+	if (UEI_ECODE_RESTART(ecode))
+		goto restart;
+	return 0;
+}

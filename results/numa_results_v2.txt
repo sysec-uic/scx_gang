@@ -1,0 +1,24 @@
+nodes=2 cpus=48  N=20  iters/run=1,000,000
+
+########## SINGLE-GANG (controlled: sync=sense_barrier), weak/1M ##########
+  D-unpinned      1151 +- 470     med=901     min=609    max=2334   
+  D-1socket       6000 +- 3640    med=5280    min=875    max=14820  
+  D-crossnode      112 +- 65      med=86      min=35     max=306    
+  scx_gang        4933 +- 3219    med=4098    min=937    max=16452  
+  scx_group       6509 +- 7608    med=4534    min=1673   max=38779  
+
+########## THROUGHPUT SCALING (K gangs; aggregate weak/second) ##########
+--- K=1 gangs ---
+  default :  total_weak~845       agg_throughput~335       weak/s  (mean of 3 trials)
+  scx_gang:  total_weak~8618      agg_throughput~4130      weak/s  (mean of 3 trials)
+--- K=2 gangs ---
+  default :  total_weak~11450     agg_throughput~5405      weak/s  (mean of 3 trials)
+  scx_gang:  total_weak~13134     agg_throughput~6455      weak/s  (mean of 3 trials)
+--- K=4 gangs ---
+  default :  total_weak~2379      agg_throughput~697       weak/s  (mean of 3 trials)
+  scx_gang:  total_weak~22943     agg_throughput~10520     weak/s  (mean of 3 trials)
+--- K=8 gangs ---
+  default :  total_weak~23299     agg_throughput~6282      weak/s  (mean of 3 trials)
+  scx_gang:  total_weak~23304     agg_throughput~7554      weak/s  (mean of 3 trials)
+
+(default uses sb_sense; scx_gang uses sb_group_plus; both = lightweight sense_barrier)

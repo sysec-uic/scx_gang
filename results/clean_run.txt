@@ -1,0 +1,35 @@
+### governor=performance no_turbo=1
+nodes=2 cpus=48  N=30  iters/run=1,000,000
+
+########## SINGLE-GANG (controlled: sync=sense_barrier), weak/1M ##########
+  D-unpinned      1572 +- 2246    med=1429    min=7      max=12284  
+  D-1socket      12756 +- 5256    med=10906   min=6710   max=27278  
+  D-crossnode      114 +- 141     med=62      min=9      max=577    
+  scx_gang       12813 +- 4670    med=11835   min=4002   max=27652  
+  scx_group      11911 +- 4918    med=11656   min=2012   max=26082  
+
+########## THROUGHPUT SCALING (K gangs; aggregate weak/second) ##########
+--- K=1 gangs ---
+  default :  total_weak~5569      agg_throughput~1510      weak/s  (mean of 3 trials)
+  scx_gang:  total_weak~16365     agg_throughput~7178      weak/s  (mean of 3 trials)
+--- K=2 gangs ---
+  default :  total_weak~173       agg_throughput~51        weak/s  (mean of 3 trials)
+  scx_gang:  total_weak~18487     agg_throughput~7957      weak/s  (mean of 3 trials)
+--- K=4 gangs ---
+  default :  total_weak~23999     agg_throughput~7606      weak/s  (mean of 3 trials)
+  scx_gang:  total_weak~41402     agg_throughput~10053     weak/s  (mean of 3 trials)
+--- K=8 gangs ---
+  default :  total_weak~48579     agg_throughput~13279     weak/s  (mean of 3 trials)
+  scx_gang:  total_weak~51606     agg_throughput~13879     weak/s  (mean of 3 trials)
+
+(default uses sb_sense; scx_gang uses sb_group_plus; both = lightweight sense_barrier)
+
+cpus=48  trials/cell=20  iters/run=1,000,000  (sync=sense_barrier throughout)
+
+K     default (weak/s)                        scx_gang (weak/s)                       gain
+1          670 +- 1207    [     7..5813   ]       5972 +- 2021    [  2407..11543  ]   11.1x (median)
+2         5955 +- 4541    [     9..13288  ]      10019 +- 3068    [  4707..16604  ]   1.3x (median)
+4         4754 +- 2937    [   105..11636  ]      19229 +- 6433    [  7753..35176  ]   4.8x (median)
+6         8916 +- 4975    [  2982..20687  ]      17986 +- 13119   [  4912..61273  ]   2.0x (median)
+8        13617 +- 8151    [   392..26487  ]      13084 +- 7147    [  1351..28283  ]   1.1x (median)
+ALLDONE

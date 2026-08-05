@@ -1,0 +1,35 @@
+# build outputs
+bin/
+*.o
+*.l1o
+*.l2o
+*.l3o
+*.bpf.skel.h
+
+# test binaries left in place by `make -C src/tests`
+src/tests/sb
+src/tests/sb_sense
+src/tests/sb_group
+src/tests/sb_group_plus
+src/tests/litmus
+src/tests/litmus_nobpf
+
+# local experiment output (results/ holds the runs we publish; a fresh run
+# redirected anywhere else is local noise)
+/*.txt
+/*.log
+*.out
+core
+core.*
+
+# figure regeneration
+__pycache__/
+*.pyc
+
+# editor / OS
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+.DS_Store
