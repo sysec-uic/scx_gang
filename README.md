@@ -1,11 +1,11 @@
-# scx_gang — Gang-Scheduling Memory-Model Litmus Tests with `sched_ext`
+# scx_gang: Gang-Scheduling Memory-Model Litmus Tests with `sched_ext`
 
 Artifact for the paper *"Pinning Isn't Enough: Gang-Scheduling Memory-Model
-Litmus Tests with `sched_ext`"* (eBPF '26).
+Litmus Tests with `sched_ext`"* ([eBPF'26](https://ebpf.github.io/2026/cfp.html)).
 
-A litmus test only reveals weak hardware-memory behaviours when its threads run
+A litmus test only reveals weak hardware-memory behaviors when its threads run
 **simultaneously on different cores**, within a window of a few cycles. Linux
-does not guarantee that: on a multi-socket machine the default scheduler may
+does not guarantee that: on a multi-socket machine, the default scheduler may
 scatter the threads across sockets and collapse the observed rate, and static
 pinning livelocks once a campaign oversubscribes the machine. This repository
 contains two `sched_ext` (eBPF) schedulers that make the co-scheduling
